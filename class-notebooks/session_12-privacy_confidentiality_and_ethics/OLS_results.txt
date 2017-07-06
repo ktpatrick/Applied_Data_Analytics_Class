@@ -1,0 +1,31 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:              log(wage)   R-squared:                       0.005
+Model:                            OLS   Adj. R-squared:                  0.005
+Method:                 Least Squares   F-statistic:                     30.46
+Date:                Thu, 20 Apr 2017   Prob (F-statistic):           1.08e-36
+Time:                        15:41:26   Log-Likelihood:                -73126.
+No. Observations:               36640   AIC:                         1.463e+05
+Df Residuals:                   36633   BIC:                         1.463e+05
+Df Model:                           6                                         
+Covariance Type:            nonrobust                                         
+==================================================================================
+                     coef    std err          t      P>|t|      [95.0% Conf. Int.]
+----------------------------------------------------------------------------------
+Intercept          8.2560      0.160     51.533      0.000         7.942     8.570
+C(sex)[T.M]        0.1935      0.028      6.907      0.000         0.139     0.248
+C(race)[T.BLK]    -0.7697      0.159     -4.835      0.000        -1.082    -0.458
+C(race)[T.HSP]    -0.4951      0.161     -3.080      0.002        -0.810    -0.180
+C(race)[T.IND]    -0.2180      0.326     -0.668      0.504        -0.858     0.422
+C(race)[T.UNK]    -0.1984      0.560     -0.354      0.723        -1.296     0.899
+C(race)[T.WHI]    -0.6095      0.159     -3.825      0.000        -0.922    -0.297
+==============================================================================
+Omnibus:                    26515.342   Durbin-Watson:                   1.981
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):           587398.064
+Skew:                          -3.270   Prob(JB):                         0.00
+Kurtosis:                      21.493   Cond. No.                         91.8
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[(36640.0, 'Intercept'), (31959.0, 'C(sex)[T.M]'), (17707.0, 'C(race)[T.BLK]'), (4728.0, 'C(race)[T.HSP]'), (39.0, 'C(race)[T.IND]'), (11.0, 'C(race)[T.UNK]'), (14029.0, 'C(race)[T.WHI]')]

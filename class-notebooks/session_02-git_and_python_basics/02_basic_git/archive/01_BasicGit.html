@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="git-overview">Git Overview</h1>
+<p>The tutorial will give a quick overview of what git is, how to use it, and how to work as a team using the GitHub workflow.</p>
+<p>For this tutorial you will need to have access to <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Git</a>, a <a href="http://swcarpentry.github.io/shell-novice/">Terminal</a>, and a <a href="http://swcarpentry.github.io/git-novice/02-setup/">text editor</a> - you can use a terminal-based text editor like <a href="http://www.vim.org/">vim</a> or <a href="https://www.gnu.org/software/emacs/">emacs</a>, or you can use one with a more complex interface like <a href="https://www.sublimetext.com/">Sublime</a>.</p>
+<blockquote>
+<p>For this tutorial, all commands that you should type in your terminal will be prefaced with <code>$</code>.</p>
+</blockquote>
+<h2 id="git-in-a-nutshell">Git in a nutshell</h2>
+<div class="figure">
+<img src="git.png" alt="git" />
+<p class="caption">git</p>
+</div>
+<p><a href="https://xkcd.com/1597/">Image source</a></p>
+<p>Git is a <em>version control system</em> which helps you keep track of changes you make to files during the development of your project. You can think of it as an undo button, a lab notebook, and a tool to safely and efficiently collaborate with others on a shared project, all rolled into one. All serious software projects use version control.</p>
+<p>While git is mostly used in software development, it can be used for anything you like (<a href="https://www.gitbook.com/">writing books</a>, for example), as long as your files are plain text (e.g., source code, <span class="math inline">$\LaTeX$</span> files).</p>
+<p>Simply speaking, git saves snapshots of your work called <code>commits</code>; after a <code>commit</code> is created, you can go back and forth through different commits in your project -- maybe you were experimenting with some new function and realized the old function was better, no problem, you can bring back anything! The collections of commits together with their associated metadata (like who made the changes, and when) form the <code>repository</code> of your project.</p>
+<div class="figure">
+<img src="git_commit.png" alt="git 2" />
+<p class="caption">git 2</p>
+</div>
+<p><a href="https://xkcd.com/1296/">Image source</a></p>
+<p>The entire development of your project, the <code>repository</code>, is stored on your computer. but we know that's dangerous, so you can also host a remote copy on a hosting service like GitHub, Bitbucket, or GitLab. Hosting a project's <code>repository</code> on GitHub also allows for the distribution of your work and collaboration with others. This prevents endless emailing of source code and the following situation:</p>
+<div class="figure">
+<img src="phd101212s.gif" alt="final" />
+<p class="caption">final</p>
+</div>
+<h2 id="git-sounds-awesome-how-do-i-get-it">git sounds awesome! How do I get it?</h2>
+<p>Chances are, git is already installed on your computer. To check, open up a terminal and type <code>git</code>. If not, you can get it <a href="https://git-scm.com/">here</a>.</p>
+<p>OS X users can use <code>homebrew</code> to install git.</p>
+<h2 id="can-i-get-buttons-and-stuff">Can I get buttons and stuff?</h2>
+<p><code>git</code> is a command line tool, which means it doesn't have a native graphical user interface. Using the <code>git</code> CLI is the most flexible way of working with <code>git</code>, and if you are working on a remote server you will unlikely be able to use a GUI.</p>
+<p>However, if you <em>really</em> want a point-and-click interface on your computer, here are some options:</p>
+<ul>
+<li><a href="https://git-scm.com/download/gui/mac">Options for Mac</a></li>
+<li><a href="https://www.gitkraken.com/">GitKraken</a> (Windows and Mac)</li>
+</ul>
+<p><em>Keep in mind that if you are logging into a remote machine, such as AWS, a GUI may not be an option.</em></p>
+<h2 id="configure-your-git-profile">Configure your Git Profile</h2>
+<p>First things first: you need to configure your <code>git</code> client, so that your commits are correctly attributed to you, and so you get pretty output. Do the following:</p>
+<p>Open up a terminal: Go to your desktop on ADRF, left-click and select Open Terminal.</p>
+<pre><code># How my git configuration currently looks
+$ git config --list</code></pre>
+<p>My workspace #switch the names to your information</p>
+<pre><code># Adding some customization
+$ git config --global user.name &quot;Clark Kent&quot;
+$ git config --global user.email &quot;clark.kent@dailyplanet.com&quot;
+$ git config --global color.ui &quot;auto&quot;
+$ git config --global core.editor &#39;nano&#39; #or vim, emacs sublime</code></pre>
+<p>For a list of text editors, see Software Carpentry's <a href="http://swcarpentry.github.io/git-novice/02-setup/">list</a></p>
+<p>Also do the following (important):</p>
+<pre><code>$ git config --global push.default current</code></pre>
+<p>You now have your <code>git</code> client configured. Next we will create our first repository.</p>
+</body>
+</html>

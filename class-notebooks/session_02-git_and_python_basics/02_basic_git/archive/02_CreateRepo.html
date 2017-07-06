@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="create-a-repository">Create a Repository</h1>
+<p>Let's work on creating our first <code>git</code> repository.</p>
+<p>In this tutorial, all shell commands that you should type in the terminal will be prefixed with <code>&gt;</code> not the $ we used in Introduction to CLI.</p>
+<blockquote>
+<p>For this tutorial, all commands that you should type in your terminal will be prefaced with <code>&gt;</code>.</p>
+</blockquote>
+<h2 id="create-a-git-repository">Create a git repository</h2>
+<p>Let's say our project is to analyze 311 data from New York City.</p>
+<blockquote>
+<p>If you already have a nyc_311 directory then ignore the instruction above.</p>
+</blockquote>
+<p>First we'll <em>make a directory</em> for our project called <code>nyc_311</code> and then <em>change directories</em> to our new <code>nyc_311</code> directory:</p>
+<pre><code>&gt; mkdir -v nyc_311
+&gt; cd nyc_311</code></pre>
+<p>The <code>-v</code> flag after <code>mkdir</code> produces <em>verbose</em> output, which means that you'll see the results of the command displayed. You should see <code>mkdir: created directory 'nyc_311'</code>, so you know that the command did what you intended.</p>
+<p>Now let's <em>initialize</em> the git repository using the command <code>git init</code>. (You'll notice that all <code>git</code> commands have the format <code>git &lt;verb&gt;</code>.)</p>
+<pre><code>&gt; git init</code></pre>
+<p>One of the things <code>git init</code> does is create a <code>.git</code> directory. To see this, we can <em>list</em> all the files in this directory using the <code>ls</code> command. We include the <code>-a</code> flag to tell the command to display <em>hidden</em> files, or those that begin with a <code>.</code>, in the list.</p>
+<pre><code>&gt; ls -a
+.  ..  .git/</code></pre>
+<p>We see that there is now a <code>.git</code> directory in the <code>nyc_311</code> directory. <em>Unless you really know what you are doing</em> <strong>DO NOT EVER</strong> <em>modify anything in this directory. If you delete this directory, the entire history of your project will be gone.</em></p>
+<h2 id="make-our-first-commit">Make our first commit!!</h2>
+<p>All good projects should have a &quot;README&quot; describing the purpose and organization of the project, so let's start with that. Fire up your favorite text editor and create a file named <code>README.md</code>. The <code>.md</code> means this file will be read as <code>markdown</code>, which allows us to format the text programmatically. Here's a basic example of a <code>README.md</code>:</p>
+<pre><code># Exploring 311 Calls in NYC
+
+## Description
+
+This repo is for an analysis of 311 calls in NYC using Python 2.7.</code></pre>
+<p>When you're first starting a project, there's a good chance you won't have much more to add, and that's OK. Notice that we <em>do</em> have a title, a short description of the project, and a list of the software the project required, also known as the <em>dependencies</em>. It's a good idea to keep updating both the description and dependencies as your project grows and evolves.</p>
+<p>The <code>#</code> here don't signify hashtags or comments - they are part of <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet"><code>markdown</code> syntax</a>, and they designate headings.</p>
+<p>Now let's look at the <em>status</em> of our repo using <code>git status</code>:</p>
+<pre><code>&gt; git status
+On branch master
+
+Initial commit
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+          README.md
+
+          nothing added to commit but untracked files present (use &quot;git add&quot; to track)</code></pre>
+<p><code>git status</code> tells us which <em>branch</em> we are on, which files are being tracked, and which files are present that <em>aren't</em> being tracked. We see our new file <code>README.md</code> listed under <code>Untracked files</code> - <code>git</code> sees that we've added something, but doesn't know whether it should be logged as part of our project. When we create a new file, we need to <em>tell</em> <code>git</code> to start tracking it. Like the command suggests, let's use <code>git add</code> to track <code>README.md</code>.</p>
+<pre><code>&gt; git add README.md</code></pre>
+<p>Now let's invoke the command <code>git status</code> again.</p>
+<pre><code>&gt; git status
+On branch master
+
+Initial commit
+
+Changes to be committed:
+  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)
+
+          new file:   README.md</code></pre>
+<p>Now that we have added the file, it has been &quot;staged&quot; to be committed. We can now make our first commit!</p>
+<pre><code>&gt; git commit</code></pre>
+<p>When you invoke the <code>git commit</code> command, an editor should pop up. This is for you to write your <strong>commit message</strong>, a message that provides the context of <em>what you did</em> and <em>why you did it</em>. Anyone can look at a commit and examine what was changed; you might look at a commit message to find where you changed a certain file, or your collaborator might read it before incorporating your changes into the shared version of the project.</p>
+<p>Give some thought to what you write here - good commit messages lead to a usable <code>git</code> log, and separate novice <code>git</code> users from competent practitioners. Generally, you should follow these guidelines in a commit message:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>First line</strong> is a one-line summary (fewer than 80 characters) of the commit. It should be in <a href="https://en.wikipedia.org/wiki/Letter_case#Title_case">title case</a> and written in the <a href="https://en.wikipedia.org/wiki/Imperative_mood">imperative voice</a>. A good rule of thumb: <em>If applied this commit will, <insert title of git message here></em>.</p></li>
+<li><p><strong>Second line</strong> should be blank.</p></li>
+<li><p><strong>Third (and subsequent) lines</strong> should include more details of the commit.</p></li>
+</ol>
+<p>My commit message is the following:</p>
+<pre><code>Check in README file
+
+* Added short description of the project
+* Added python2.7 as a dependency</code></pre>
+<p>Now that we have made our first commit we can examine our log using <code>git log</code>!</p>
+<pre><code>&gt; git log
+
+* commit aaf89fd77e9b43d99fe32823843a7519b2108c90
+  Author: Clark Kent &lt;clark.kent@dailyplanet.com&gt;
+  Date:   Sat Nov 05 13:45:11 2016 -0600
+
+          Check in README file
+
+          * Added short description of the project
+          * Added python3 as a dependency</code></pre>
+<p>The long string of characters in the first line is a unique identifier for your commit. You can use this identifier to switch back to this specific version of your project in the future. The second line is who made the commit. The third line gives the date and time. Everthing that follows is the commit message.</p>
+<p>To see only the <em>titles</em> of commit messages, you can use <code>git log</code> with the <code>--oneline</code> option:</p>
+<pre><code>&gt; git log --oneline</code></pre>
+<p>There are many other options to the <code>git log</code> command; explore the documentation to find which ones suit your needs. Here's one combination we recommend (check it out!):</p>
+<pre><code>&gt; git log --oneline --graph --all --decorate</code></pre>
+<h2 id="moving-and-removing-files">Moving and removing files</h2>
+<p>Now you know how to <em>add</em> a file to your project using <code>git</code>. What if you want to get rid of something? You can <strong>remove</strong> files from your repo using <code>git rm</code>:</p>
+<pre><code>&gt; git rm FILENAME
+&gt; git rm -r DIRECTORY</code></pre>
+<p>Note that when you remove a file using <code>git</code>, you can still go back to a <em>previous</em> commit before you removed the file and <strong>recover</strong> that file. This is different than simply using the command <code>rm</code>, which permanently erases the file.</p>
+<p>You'll also have to tell <code>git</code> if you want to <em>rename</em> a file using the <code>git mv</code> command, because <em>renaming</em> a file is basically <em>moving</em> it to a new location. For example, to change the name of a file from <code>OLD</code> to <code>NEW</code>:</p>
+<pre><code>&gt; git mv OLD NEW</code></pre>
+<p><code>git rm</code> and <code>git mv</code> will stage the changes, so after invoking one of these commands, you can just <code>commit</code> your changes without using <code>git add</code> again.</p>
+<p>We have our first commit and repo! Now we're ready to write some code!</p>
+</body>
+</html>

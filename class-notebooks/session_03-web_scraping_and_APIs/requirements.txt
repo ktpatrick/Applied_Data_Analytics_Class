@@ -1,0 +1,8 @@
+requests
+beautifulsoup4
+sqlalchemy
+pandas
+geopandas
+geos
+shapely
+matplotlib

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="using-the-git-log">Using the Git Log</h1>
+<p>In this portion of the tutorial, we'll explore the <code>git</code> log and how to go back to prior versions of a project.</p>
+<blockquote>
+<p>For this tutorial, all commands that you should type in your terminal will be prefaced with <code>$</code>.</p>
+</blockquote>
+<h2 id="create-a-python-script-to-output-analysis-of-311-calls">Create a Python Script to Output Analysis of 311 Calls</h2>
+<p>Let's get some data to work with using the</p>
+<p>Let's create a directory for our data and transfer it into our project If you are not in your project folder, <code>nyc_311</code> cd into it.</p>
+<pre><code>cd /nfshome/ckent/nyc_311</code></pre>
+<p>where <code>ckent</code> is replaced by your user name.</p>
+<p>Then make a raw directory and copy the data.</p>
+<pre><code>&gt; mkdir -v raw_data #if you already have a raw_data directory from Intro_CLI don&#39;t worry about this
+&gt; cp -v /projects/Demo/shared/AppliedDataAnalytics/notebooks/module_02-git_and_python_basics/basic_git_tutorial/data/311-service-requests.csv raw_data/
+</code></pre>
+<p>Now it is time for some analysis, which we will do in our analysis directory to keep things organized.</p>
+<p>First we need to change into the analysis directory</p>
+<pre><code>cd analysis</code></pre>
+<p>Fire up your favorite text editor (we'll use <code>nano</code>), and let's write a little program called <code>descriptive_stats.py</code> to get <em>descriptive stats</em> on our data about 311 calls in NYC. The <code>.py</code> suffix indicates that this file is a program meant to be run using Python.</p>
+<pre><code>$ nano descriptive_stats.py</code></pre>
+<p>Once we're inside the text editor, we can write the program:</p>
+<pre><code>from __future__ import print_function
+import pandas as pd
+
+fname_data = &#39;../raw_data/311-service-requests.csv&#39;
+df_311_calls = pd.read_csv(fname_data)
+print( df_311_calls[&#39;Complaint Type&#39;].value_counts()[:5] )</code></pre>
+<p>When we write a Python program, we can run it from the command line by typing <code>python</code> and then the program name (here, <code>descriptive_stats.py</code>). You should get the following output:</p>
+<pre><code>$ python descriptive_stats.py
+
+HEATING                   14200
+GENERAL CONSTRUCTION       7471
+Street Light Condition     7117
+DOF Literature Request     5797
+PLUMBING                   5373
+Name: Complaint Type, dtype: int64</code></pre>
+<p>Great! Now we have a working program that calculates descriptive statistics. Let's commit it to the repo:</p>
+<pre><code>&gt; git add descriptive_stats.py # to the staging area
+&gt; git commit -m &quot;Checking in descriptive_stats.py, output top 5 311 complaints&quot;</code></pre>
+<p>In this case, we used the <code>-m</code> option to make an <em>in-line commit message</em> (rather than launching a text editor). This was a small commit, so it didn't require a lengthy commit message.</p>
+<p>Say that we changed our minds, and want our program to output the <em>top 10</em> 311 complaints rather than the top 5. No problem! We'll just use the text editor to modify our program:</p>
+<pre><code>$ nano descriptive_stats.py</code></pre>
+<p>We should see the same thing we had before:</p>
+<pre><code>from __future__ import print_function
+import pandas as pd
+
+fname_data = &#39;../raw_data/311-service-requests.csv&#39;
+df_311_calls = pd.read_csv(fname_data)
+print( df_311_calls[&#39;Complaint Type&#39;].value_counts()[:5] )</code></pre>
+<p>Now we just change the 5 to a 10, and we're done!</p>
+<pre><code>from __future__ import print_function
+import pandas as pd
+
+fname_data = &#39;../raw_data/311-service-requests.csv&#39;
+df_311_calls = pd.read_csv(fname_data)
+print( df_311_calls[&#39;Complaint Type&#39;].value_counts()[:10] )</code></pre>
+<p>Let's commit that change:</p>
+<pre><code>$ git add descriptive_stats.py
+$ git commit -m &quot;Changed the top 5 results to the top 10 results in descriptive_stats.py&quot;</code></pre>
+<p>If we look at our <code>git</code> log we should now see the history of our changes:</p>
+<pre><code>$ git log
+
+
+commit 42c35933c4d52708c2562c1c05361b152a2b9230
+Author: Clark Kent &lt;clark.kent@dailyplanet.com&gt;
+Date:   Sat Nov 12 16:55:29 2016 -0600
+
+    Changed the top 5 results to the top 10 results in descriptive_stats.py
+
+commit ab85797b2c3d68fb0c97535080079138888b5556
+Author: Clark Kent &lt;clark.kent@dailyplanet.com&gt;
+Date:   Sat Nov 12 16:52:52 2016 -0600
+
+    Checking-in descriptive_stats.py outputs the top 5 311 complaints
+
+commit aaf89fd77e9b43d99fe32823843a7519b2108c90
+Author: Clark Kent &lt;clark.kent@dailyplanet.com&gt;
+Date:   Sat Nov 12 13:45:11 2016 -0600
+        Checking in README file
+
+    * Added short description of the project
+    * Added python3 as a dependency</code></pre>
+<p>Now we can use the <code>git diff</code> command to see the difference between our past two commits:</p>
+<pre><code>$ git diff HEAD~1
+
+diff --git a/descriptive_stats.py b/descriptive_stats.py
+index 09b7168..c38d3e3 100644
+--- a/descriptive_stats.py
++++ b/descriptive_stats.py
+@@ -3,4 +3,4 @@ import pandas as pd
+
+ fname_data = &#39;../raw_data/311-service-requests.csv&#39;
+  df_311_calls = pd.read_csv(fname_data)
+  -print( df_311_calls[&#39;Complaint Type&#39;].value_counts()[:5] )
+  +print( df_311_calls[&#39;Complaint Type&#39;].value_counts()[:10] )</code></pre>
+<p><code>HEAD</code> is shorthand for the <em>latest commit</em> in the repository. <code>HEAD~1</code> is a shorthand for the latest commit, <em>minus one</em>. You can replace 1 with any number you like; for instance, <code>HEAD~20</code> refers to 20 commits ago.</p>
+<p>The output of <code>git diff</code> is shown above. The first line looks similiar to a diff command. The second line shows the <em>commit identifiers</em> of the two commits being compared. The next two lines are <em>names</em> of the files being compared.</p>
+<p>The really interesting part is at the bottom. The line with the <code>-</code> sign is the <em>prior</em> commit. The line with a <code>+</code> sign shows the current commit. From this we can see that we changed <em>one line</em> of <code>descriptive_stats.py</code>, <em>removing</em> the number 5 and <em>adding</em> the number 10.</p>
+<p>We can <em>return</em> to the version of a file from a previous commit using the <code>git checkout</code> command:</p>
+<pre><code>$ git checkout HEAD~1 descriptive_stats.py</code></pre>
+<p>If we look at the file <code>descriptive_stats.py</code>, it should have reverted back to our old version (with 5 instead of 10).</p>
+<blockquote>
+<p>Note: If you are working in a file and make a mistake, and you want to return to the previous version of the file, you can use the command <code>git checkout HEAD</code> with the file name.</p>
+</blockquote>
+<pre><code>$ git checkout HEAD descriptive_stats.py</code></pre>
+<p>Another useful option for the <code>git diff</code> command is <code>--staged</code>, which allows us to examine the changes that have been made in files that are <em>staged</em> for commit:</p>
+<pre><code>$ git diff --staged</code></pre>
+<p>Next up, we'll go over how to host a project on GitHub.</p>
+</body>
+</html>

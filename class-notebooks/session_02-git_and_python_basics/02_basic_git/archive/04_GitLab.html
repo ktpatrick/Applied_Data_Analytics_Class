@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="gitlab">GitLab</h1>
+<p>This part of the tutorial will go over how to host your project on GitLab, including: * The virtues of using a <code>.gitignore</code> file * The GitLab workflow * How to solve a merge conflict</p>
+<p>Before starting this tutorial, you should have a Gitlab username and password.</p>
+<blockquote>
+<p>For this tutorial, all commands that you should type in your terminal will be prefaced with <code>&gt;</code>.</p>
+</blockquote>
+<h2 id="what-is-gitlab">What is GitLab?</h2>
+<p>There are several popular providers for hosting <code>git</code> repositories; the most widely used is <a href="https://github.com/">GitHub</a>. These services maintain a <em>remote</em> version of your repository that corresponds to the <em>local</em> version you have saved on your own computer. The remotely hosted version serves as a backup and allows you to easily share your work and collaborate with others. For this course, we'll be using <a href="https://about.gitlab.com/">GitLab</a>.</p>
+<h2 id="getting-started-on-gitlab">Getting Started on GitLab</h2>
+<ol style="list-style-type: decimal">
+<li><p>Log in to GitLab with your username and password and navigate to your GitLab page.</p></li>
+<li><p>Create a new repository called <em>NYC-311</em>. The repository URL will be <em>https://insert-path-to-gitlab/username/NYC-311</em>.</p></li>
+<li><p>Add the remote repository to your local repository:</p></li>
+</ol>
+<pre><code>&gt; git remote add origin https://insert-path-to-gitlab/username/nyc-311.git</code></pre>
+<p>You can then see the remote repository with the <code>git remote</code> command:</p>
+<pre><code>&gt; git remote -v</code></pre>
+<p>The remote repository is named &quot;origin,&quot; which is a common choice of name for the primary repository for a project.</p>
+<p>The remote version of your repository doesn't automatically sync with your local version (or vice versa). To sync up the remote and local versions, you have to <strong>push</strong> your local changes <em>to</em> the remote repository, or <strong>pull</strong> any changes <em>from</em> the remote repository into your local repository. To push changes, we use the <code>git push</code> command:</p>
+<pre><code>&gt; git push --set-upstream origin master</code></pre>
+<p>What we have done is taken a copy of our repository and <em>pushed</em> it to GitLab. The <code>--set-upstream</code> option specifies the remote branch that corresponds to your local branch, so when you push changes to GitLab in the future, you just need to use the command:</p>
+<pre><code>&gt; git push origin master</code></pre>
+<p>To <em>pull</em> in changes from the remote repository to your repository, you can use the following command:</p>
+<pre><code>&gt; git pull origin master</code></pre>
+<p>Why do we need to keep two versions of the same project? Let's try out an example. Grab a friend and have them <code>clone</code> your repo using the command below. (You'll have to make sure they also have a GitLab account and add them as a collaborator to your repository).</p>
+<pre><code>&gt; git clone https://insert-path-to-gitlab/username/nyc-311.git</code></pre>
+<p>Now your friend has a local copy of your repository. Now <code>cd</code> into the project folder and add a special file called <code>.gitignore</code>. The <code>.gitignore</code> file is a special file that tells <code>git</code> what it should <strong>ignore</strong> when you make a commit - that is, anything that you <em>don't</em> want to end up in your repository.</p>
+<p>Open up the <code>.gitignore</code> file in a text editor (for this example we're using <code>nano</code>):</p>
+<pre><code>&gt; nano .gitignore</code></pre>
+<p>Then add the following:</p>
+<pre><code>#Ignore pyc files
+*.pyc</code></pre>
+<p>The first line (which starts with a <code>#</code>) is a comment, which <code>git</code> will ignore. The second line is the first entry: <code>*.pyc</code>. The <code>*</code> is shorthand for &quot;anything,&quot; so including <code>*.pyc</code> instructs <code>git</code> <strong>not</strong> to commit files whose names match the pattern <code>(anything).pyc</code>. Files that end in <code>.pyc</code> are Python bytecode files that will appear when you run your Python code; they are not necessary or useful for you, so you don't want them cluttering up your repo. Using the <code>*</code> is useful so you don't have to list out all possible <code>.pyc</code> files exhaustively.</p>
+<p>It's also a good habit to put the names of any files that contain passwords or database configurations in your <code>.gitignore</code>, so that you don't inadvertently commit sensitive information to the repo. Remember that <code>git</code> keeps a record of files even after they're deleted, so if you accidentally commit sensitive information, it can be hard to make sure all traces of this information have been erased.</p>
+<p>Now let's add the <code>.gitignore</code> file to our repository:</p>
+<pre><code>&gt; git add .gitignore
+&gt; git commit -m &quot;Added .gitignore&quot;</code></pre>
+<p>And push our changes to the repository:</p>
+<pre><code>&gt; git push origin master</code></pre>
+<p>Now on your machine <code>git pull</code> the new state of the repository</p>
+<pre><code>&gt; git pull origin master</code></pre>
+<p>If you use the command <code>ls -a</code>, you should see the <code>.gitignore</code> file. If you look at the log (using <code>git log</code>) you should see the new commit.</p>
+<pre><code>&gt; ls -a
+&gt; git log</code></pre>
+<h2 id="github-flow">GitHub Flow</h2>
+<p>In this portion of the tutorial, we'll go over <em>branching</em> and the general GitHub workflow.</p>
+<p>So far we have been doing the &quot;solo&quot; workflow, which looks something like the following:</p>
+<pre><code> &gt; mkdir my_working_directory
+ &gt; cd my_working_directory
+ &gt; git init
+ &gt; touch some_file.py
+  # hack, do some work, hack
+  # hack
+ &gt; git add some_file.py
+ &gt; git commit -m &quot;Working with some awesome idea&quot;
+ &gt; git push origin master
+  # hack
+  # more hacking</code></pre>
+<p>As you might have guessed, this workflow is just fine when you are working by yourself. When you're working in a team, it's useful to have a more structured workflow. Here we'll talk about the Github flow.</p>
+<p>In the GitHub flow, <em>we never code anything unless there is a need to.</em> When something needs to be done, we create an <strong>issue</strong> on the GitHub repository for it. <em>Good</em> issues: - Are clear - Have a defined output - Are actionable (written in the imperative voice) - Can be completed in a few days (at most)</p>
+<p>Here are some examples: - <em>Good</em>: /Fix the bug in .../ - <em>Good</em>: /Add a method that does .../ - <em>Bad</em>: /Solve the project/ - <em>Bad</em>: /Some error happen/</p>
+<p><a href="https://docs.gitlab.com/ee/gitlab-basics/create-issue.html">Here is how to create a GitLab issue.</a></p>
+<p>Once an issue exists, we'll pull from the repo and create a <em>branch</em>. A <em>branch</em> is a copy of the code base separate from the main master branch where we can work on our issue (e.g, fixing a bug, adding a feature) without affecting the master branch during our work and then ultimately merge our change into the master branch.</p>
+<p>The flow goes something like this:</p>
+<pre><code>##Pull from the repo
+&gt; git pull
+##Decide what you want to do and create an issue
+&gt; git checkout -b a-meaningful-name</code></pre>
+<p>The command <code>git checkout -b</code> creates a new branch (in this case called &quot;a-meaningful-name&quot;) and switches to that branch. We can see what branch we are on by using the command <code>git branch</code>, which displays all the branches in the local repository with a <code>*</code> next to the branch we are currently on.</p>
+<pre><code>##
+##hack, hack, hack, make some changes, add/rm files, commit
+##
+##Push to the repo and create a remote branch
+&gt; git push
+##Create a pull request and describe your work (Suggest/add a reviewer)
+##Someone then reviews your code
+##The pull-request is closed and the remote branch is destroyed
+##Switch to master locally
+&gt; git checkout master
+##Pull the most recent changes (including yours)
+&gt; git pull
+##Delete your local branch
+&gt; git branch -d a-meaningful-name</code></pre>
+<p><a href="https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html">Here is how to create a GitLab pull request.</a></p>
+<h2 id="solving-a-merge-conflict">Solving a Merge Conflict</h2>
+<p>As you work on projects with others, you will inevitably run into merge conflicts. A <strong>merge conflict</strong> occurs when you and another person have edited the same line of a file, and <code>git</code> doesn't know which line is the correct one.</p>
+<p>Let's make a conflict!</p>
+<pre><code>#create a branch called &quot;drama&quot;
+&gt; git checkout -b drama
+#now modify the descriptive_stats.py file and change the top 10
+#values to top 13
+#commit your changes
+&gt; git add descriptive_stats.py
+&gt; git commit -m &quot;Changed top 10 to top 13 in descriptive_stats.py&quot;
+#switch back to master branch
+&gt; git checkout master
+#now modify the descriptive_stats.py file and change the top 10
+#values to top 3
+#commit your changes
+&gt; git add descriptive_stats.py
+&gt; git commit -m &quot;Changed the top 10 to the top 3 in descriptive_stats.py&quot;</code></pre>
+<p>Now we merge the <code>drama</code> branch into the <code>master</code> branch:</p>
+<pre><code>&gt; git merge drama
+
+Auto-merging descriptive_stats.py
+CONFLICT (content): Merge conflict in descriptive_stats.py
+Automatic merge failed; fix conflicts and then commit the result.</code></pre>
+<p>Our arbitrary drama has caused a conflict! If we check the status, we should see the following:</p>
+<pre><code>&gt; git status
+On branch master
+You have unmerged paths.
+  (fix conflicts and run &quot;git commit&quot;)
+
+  Unmerged paths:
+    (use &quot;git add &lt;file&gt;...&quot; to mark resolution)
+
+            both modified:      descriptive_stats.py</code></pre>
+<p>Examining the conflicting file <code>descriptive_stats.py</code>, you should see the following:</p>
+<pre><code>from __future__ import print_function
+import pandas
+
+fname_data = &#39;311-service-requests.csv&#39;
+df_311_calls = pd.read_csv(fname_data)
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+print(df_311_calls[&#39;Complaint Type&#39;].value_counts()[:3])
+=======
+print(df_311_calls[&#39;Complaint Type&#39;].value_counts()[:13])
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; drama</code></pre>
+<p><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> denote the section of the code containing the conflict. At the beginning and end of the section, respectively, you see <code>HEAD</code> and <code>drama</code>. That means that the first section (before the <code>=======</code>) comes from the version of the file on the <code>master</code>, or <code>HEAD</code>, branch, while the section after the divider comes from that the preceding line is from the drama branch.</p>
+<p>The lines of the two branches are separated by <code>=======</code>. In the event of a merge conflict, we have three choices: (1) keep the line from the <code>master</code> branch, (2) keep the line from the <code>drama</code> branch, or (3) create an entirely new line. In this case, we want to keep the line from the master branch (the line with 3 instead of 13), so we'll <strong>delete</strong> the merge conflict markers and the line from the <code>drama</code> branch:</p>
+<pre><code>from __future__ import print_function
+import pandas
+
+fname_data = &#39;../raw_data/311-service-requests.csv&#39;
+df_311_calls = pd.read_csv(fname_data)
+print(df_311_calls[&#39;Complaint Type&#39;].value_counts()[:3])</code></pre>
+<p>Now we save <code>descriptive_stats.py</code> and commit:</p>
+<pre><code>&gt; git commit -m &quot;resolve drama&quot;</code></pre>
+<p>Our merge conflict is now solved.</p>
+<h2 id="acknowledgements-references-and-further-resources">Acknowledgements, References and Further Resources</h2>
+<p>This tutorial was derived from tutorials created by Eduardo Blancas Reyes, Benedict Kuester, Adolfo De Unanue, <a href="swcarpentry.github.io/git-novice/">Software Carpentry</a>, and <a href="asu-compmethodsphysics-phy494.github.io/ASU-PHY494/2016/01/21/git_basics/">ASU PHY-494</a>.</p>
+<p>Further resources for becoming a <code>git</code> master are: * <a href="swcarpentry.github.io/git-novice/">Software Carpentry</a> - A more in-depth intro <code>git</code> tutorial.</p>
+<ul>
+<li><p><a href="https://try.github.io/levels/1/challenges/1">15 minute tutorial to learn git</a> - Intro tutorial.</p></li>
+<li><p><a href="http://rogerdudler.github.io/git-guide/">git - the simple guide</a> - A simple guide to get to know the most important concepts.</p></li>
+<li><p><a href="http://nvie.com/posts/a-successful-git-branching-model/">A successful git branching model</a> - A model to work with git using branches. This model is widely used in the open source community.</p></li>
+<li><p><a href="http://learngitbranching.js.org/">Learn Git Branching</a> - Understanding what branches and rebases are, in an amazing interactive tutorial.</p></li>
+<li><p><a href="https://git-scm.com/blog/2011/07/11/reset.html">Reset Demystified</a> - A blog post on <code>git reset</code> which develops some useful concepts along the way.</p></li>
+<li><p><a href="https://medium.freecodecamp.com/understanding-git-for-real-by-exploring-the-git-directory%20-1e079c15b807#.5pe75gc07">Understanding git for real by exploring the .git directory</a> - A blog post on what's inside a commit.</p></li>
+<li><p><a href="https://git-scm.com/book/en/v2">Pro Git</a> -- An in-depth discussion written by <code>git</code> masters.</p></li>
+</ul>
+</body>
+</html>

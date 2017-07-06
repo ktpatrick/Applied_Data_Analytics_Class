@@ -1,0 +1,68 @@
+
+--This creates the wages by quarter and employer for persons that have been in the Illinois DOC
+Create Table m3.TempEIN as
+	Select a.*
+	From (	Select	a.ssn,a.ein,a.seinunit,a.empr_no,a.year, a.quarter, 
+			sum(a.wage) as Wage,
+			b.CountEIN,
+			b.TotalWage,
+			sum(a.wage)/nullif(b.TotalWage,0) as PctWage
+		From ides.il_wage a
+		Left Join (	Select ssn,year, quarter, count(Wage) as CountEIN, sum(wage) as TotalWage
+				From ides.il_wage
+				where 	year between 2010 and 2015
+					and ssn in (select distinct ssn_hash
+						    From class1.person)
+				group by ssn,year,quarter
+				having count(wage)<30) b
+				on a.year=b.year and a.quarter=b.quarter and a.ssn=b.ssn
+		where 	a.year between 2010 and 2015
+			and a.ssn in (select distinct ssn_hash
+				    From class1.person) 	
+		group by a.ssn,a.ein,a.seinunit,a.empr_no,a.year,a.quarter,b.CountEIN,b.TotalWage
+		having (count(a.wage)<30 and sum(a.wage)>100000)) a
+	Left Join (	Select	a.ssn,a.ein,a.seinunit,a.empr_no,a.year, a.quarter, 
+				sum(a.wage) as Wage,
+				b.CountEIN,
+				b.TotalWage,
+				sum(a.wage)/nullif(b.TotalWage,0) as PctWage
+			From ides.il_wage a
+			Left Join (	Select ssn,year, quarter, count(Wage) as CountEIN, sum(wage) as TotalWage
+					From ides.il_wage
+					where 	year between 2010 and 2015
+						and ssn in (select distinct ssn_hash
+							    From class1.person)
+					group by ssn,year,quarter
+					having count(wage)<30) b
+					on a.year=b.year and a.quarter=b.quarter and a.ssn=b.ssn
+			where 	a.year between 2010 and 2015
+				and a.ssn in (select distinct ssn_hash
+					    From class1.person) 	
+			group by a.ssn,a.ein,a.seinunit,a.empr_no,a.year,a.quarter,b.CountEIN,b.TotalWage
+			having (count(a.wage)<30 and sum(a.wage)>100000)) b
+	on a.ssn=b.ssn and a.year=b.year and a.quarter=b.quarter and (a.PctWage<b.PctWage or (a.PctWage=b.PctWage and cast(a.ein as int)<cast(b.ein as int)))
+	where b.PctWage is NULL
+	order by ssn, year, quarter;
+
+
+
+CREATE INDEX il_wage_summed_ssn_einidx
+  ON m3.TempEIN
+  USING btree
+  (ssn COLLATE pg_catalog."default");
+
+ CREATE INDEX il_wage_summed_ein_einidx
+  ON m3.TempEIN
+  USING btree
+  (ein);
+
+CREATE INDEX il_wage_summed_qtr_einidx
+  ON m3.TempEIN
+  USING btree
+  (quarter);
+
+  CREATE INDEX il_wage_summed_yr_einidx
+  ON m3.TempEIN
+  USING btree
+  (year);
+
